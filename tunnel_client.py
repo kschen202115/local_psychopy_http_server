@@ -8,7 +8,7 @@ def generate_id(length=8):
 
 # 客户端随机生成用户 ID
 USER_ID = generate_id()
-USER_ID = 'xxxxxxxx'
+# USER_ID = 'xxxxxxxx'
 SERVER_IP = "113.206.134.78"    # 根据需要修改为实际服务器 IP
 TUNNEL_PORT = 59854
 LOCAL_HTTP_PORT = 45678
@@ -108,6 +108,8 @@ async def heartbeat_worker():
 
 async def main():
     print("客户端启动，用户 ID:", USER_ID)
+    print(f"文件访问地址: http://{SERVER_IP}:57487/{USER_ID}/")
+    print(f"psychopy访问地址: http://{SERVER_IP}:57487/{USER_ID}/index.html")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((SERVER_IP, TUNNEL_PORT))
     s.send(f"REGISTER {USER_ID}\n".encode())
