@@ -11,9 +11,13 @@ import queue
 
 # Flask 服务器
 app = Flask(__name__)
-
-def get_files():
-    return [f for f in os.listdir('./') if os.path.isfile(f)]
+local_patch = os.getcwd()
+def get_files(directory=local_patch):
+    file_list = []
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_list.append(os.path.join(file))
+    return file_list
 
 @app.route('/<id>/')
 def index(id):
@@ -26,10 +30,12 @@ def index(id):
 
 @app.route('/<id>/<path:filename>')
 def serve_static(filename, id):
-    return send_from_directory('./', filename)
+    return send_from_directory(local_patch, filename)
 
 def run_flask(log_queue):
     log_queue.put("启动 HTTP 服务器\n")
+    local_patch = os.getcwd()
+    log_queue.put(local_patch)
     app.run(host='0.0.0.0', port=45678, debug=False)
 
 async def async_pipe(reader, writer):
